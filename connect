@@ -1,0 +1,92 @@
+#!/usr/bin/env ruby
+
+##
+# Connect
+#
+# Connects to a server by name and user
+# Usage: Run `connect <hostname> <user>`
+#   <user> is optional and defaults to '<REPLACE WITH YOUR OWN DEFAULT>'
+##
+
+##
+# Settings
+# --------
+# Fill out these settings with defaults
+# specific to your situation
+##
+#
+# What is your default username for
+# all or most of your servers?
+default_user = 'root' # Please don't actually use root
+#
+# If you have one or more servers that always
+# a certain SSH user to log in, enter those
+# server hostnames here as an array of symbols
+servers_using_alternate_usernames = [:example_hostname]
+#
+# Alternative public key files
+# Use this hash if some of your
+# servers require a key that's different than
+# your default `id_rsa.pub`. Name the key after the server
+# hostname it belongs to.
+key_files = {
+  #tiberius: '~/.ssh/tiberius.pem'
+}
+#
+# User accounts for servers that have known default users 
+# different than the main one set in the `default_user` variable
+alternate_users = {
+  #tiberius: 'ubuntu'
+}
+#
+# Enter your hostnames and their IP
+# address as key value pairs in this hash.
+# Create one for each server you run.
+hosts = {
+  #my_server: '123.456.78.90',
+}
+#
+# This hash holds the descriptions for
+# each of your servers. The key should be
+# server hostname and value is the description.
+# Make sure you have one description for every hostname
+# in your hosts hash.
+descriptions = {
+  #my_server: 'The server I host my personal portfolio on'
+}
+
+##
+# NOTHING ELSE TO EDIT
+# --------------------
+# The rest of this file just runs 
+# the script. No need to edit unless
+# you have a good reason.
+##
+
+if ARGV[0].nil?
+  puts <<-END
+Please specify a hostname. USAGE:
+connect <host> <username> - Username is optional
+  END
+  exit 1
+end
+
+# ssh -i .ssh/id_rsa.pem bill@191.237.170.177
+host = ARGV[0].to_sym
+user = ARGV[1].nil? ? default_user : ARGV[1] # REPLACE 'default_user' with your preferred default username
+key_file = ([:tiberius, :tbd].include? host) ? "-i #{key_files[host]}" : ''
+
+if servers_using_alternate_usernames.include? host
+  user = alternate_users[host]
+end
+
+if ARGV[0] == 'list'
+  hosts.each do |k,v|
+    puts "#{k} --> #{v} : #{descriptions[k]}"
+  end
+  exit 1
+end
+
+puts "Connecting #{user} to #{hosts[host]}..."
+
+system("ssh #{key_file} #{user}@#{hosts[host]}")

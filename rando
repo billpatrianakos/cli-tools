@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+# Password Generator!
+#
+# Online password generators are kind of
+# sketchy. Why copy and paste a string you
+# got from some random website that could
+# be building a rainbow table from the string
+# they generate for you when you can run a
+# quick script locally and get a secure password
+# all on your own.
+#
+# No claims are made to how secure these are.
+# These should be sufficient for production use
+# unless you work with something really nuts. Like a bank.
+
+require 'securerandom'
+require 'trollop' # You will need to have Trollop gem installed for this to run. Sorry. `gem install trollop`
+
+opts = Trollop::options do
+  opt :quick, 'Generate a quick random string from `SecureRandom.hex`'
+  opt :alnum, 'Use alphanumeric characters only'
+  opt :length, 'Length of generated string', type: :int, default: 8
+  opt :fort_knox, 'Generate an incredibly long and random string of craziness. Ignores all other options', default: false
+end
+
+# Main method
+def generate(length, chars_available)
+  password = []
+  (0...length).each do |iteration|
+    password.push(chars_available.sample)
+  end # iterator
+
+  puts password.join
+  exit 1
+end
+
+# Available character sets
+alnum_chars = ('a'..'z').to_a + ('A'..'Z').to_a + (0..9).to_a
+special_chars = ['!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '+', '=', '~', '`', ':', ';', '?', '.', '<', '>', '/', '{', '[', '}', '}', ']', '\\', '|']
+all_chars = alnum_chars + special_chars
+
+if opts[:quick]
+  puts SecureRandom.hex
+  exit 1
+end
+
+if opts[:fort_knox]
+  generate(256, all_chars)
+end
+
+if opts[:alnum]
+  generate(opts[:length], alnum_chars)
+end
+
+generate(opts[:length], all_chars)

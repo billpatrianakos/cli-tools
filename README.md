@@ -37,3 +37,42 @@ connect myhost myuser
 #### Use a different public key
 
 You should set any alternate public keys in the settings variables defined in the file.
+
+### Why is this helpful?
+
+- It turns `ssh me@123.456.78.90` into `connect pluto`. 
+- No more remembering IP addresses. 
+- No more specifying or remembering alternate .pem files for Azure or AWS: `ssh me@123.456.78.9 -i ~/.ssh/my_special_key.pem` into `connect whatever`
+- It'll use the right IP address and default username every time after initial setup
+- You can always override the default username with `connect my_server jimmy`
+
+## `rando`
+
+Rando is a random string generator. It's useful for generating secure long strings. Inspect the code yourself before using this in production but generally the strings generated should be damn secure.
+
+### Setup
+
+You need to have the Trollop gem installed to run this program. `gem install trollop` and you're set.
+
+### Usage
+
+Run `rando -h` to get help and options at any time.
+
+```
+Options:
+  -q, --quick         Generate a quick random string from `SecureRandom.hex`
+  -a, --alnum         Use alphanumeric characters only
+  -l, --length=<i>    Length of generated string (default: 8)
+  -f, --fort-knox     Generate an incredibly long and random string of
+                      craziness. Ignores all other options
+  -h, --help          Show this message
+```
+
+Example use and output
+
+```
+rando -q        #=> d658f30a78b8564a8bd0a72f8aef7868
+rando -a        #=> iVCnPV3J
+rando -a -l 12  #=> 0NUd7h4SOq83
+rando -f        #=> &0<x=RsgaLVpPc$az\QY\{GUdZ0vKm[UN!a{EY&!)kUHo|IVd$X>*emkZ2ho*tu%4N#2p*qe{8A6TR@W{WDVo):.VIsr/#Rvb?6Q2uX[@h^`*Bcd<U+1[+W]CNz_P/%pBl-sT3.G$TY~ogT*r~bn:$`Gt<ry4r2t$}d#7O^^<H|N}ID|.2;QHSH5o~eCr.}:US[yPowkv{uh-h<Hn;Zp[Y^:#*}$sUj\+CYT_;^&+K]h\l8ZV<:y/@8cg*#Jg&-r
+```
